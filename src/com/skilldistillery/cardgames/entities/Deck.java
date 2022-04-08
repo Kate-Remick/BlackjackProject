@@ -11,7 +11,6 @@ public class Deck {
 		cardsInDeck = new ArrayList<>();
 		for (Suit suit : Suit.values()) {
 			for (Rank rank : Rank.values()) {
-//				System.out.println("Check");
 				this.cardsInDeck.add(new Card(suit, rank));
 			}
 		}
@@ -20,9 +19,14 @@ public class Deck {
 	public int checkDeckSize() {
 		return this.cardsInDeck.size();
 	}
-	public Card dealCard() {
+	public List<Card> dealCard(int numCards) {
+		List <Card> cardsDealt = new ArrayList<>();
+		for(int i =0; i < numCards; i++) {
+			cardsDealt.add(this.cardsInDeck.remove(0));
+			
+		}
+		return cardsDealt;
 		
-		return this.cardsInDeck.remove(0);
 	}
 	public void shuffleDeck() {
 		Collections.shuffle(this.cardsInDeck);

@@ -2,8 +2,8 @@ package com.skilldistillery.cardgames.entities;
 
 import java.util.List;
 
-public abstract class PersonAtTable implements HitOrStand{
-	Hand hand;
+public abstract class PersonAtTable implements Hit{
+	protected Hand hand;
 	
 	public PersonAtTable() {}
 	

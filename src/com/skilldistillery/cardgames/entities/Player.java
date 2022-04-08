@@ -1,38 +1,47 @@
 package com.skilldistillery.cardgames.entities;
 
 import java.util.List;
+import java.util.Map;
 
 public class Player extends PersonAtTable {
-	private Hand playerHand;
+	private String name;
 	
-	public Player() {
-		
+
+	public Player(String name) {
+		this.name  = name;
 	}
 	
 	public Hand getHand() {
-		
-		return this.playerHand;
+		return this.hand;
 	}
 	
-	public Hand newHand(List<Card> dealtCards) {
-		Hand ph = new Hand(dealtCards);
+	@Override
+	public Hand newHand(List<Card> cardsDealt) {
+		Hand ph = new Hand(cardsDealt);
+		System.out.println("The dealer deals you: ");
+		for (Card card : cardsDealt) {
+			System.out.println(card);
+		}
 		
-		return this.playerHand;
+		return ph;
 		
 	}
 
 	@Override
-	public Card Hit() {
-		// TODO Auto-generated method stub
-		return null;
+	public Map<PersonAtTable, Hand> Hit(Map<PersonAtTable, Hand> cardsOnTable, Deck deck, PersonAtTable person) {
+		cardsOnTable.get(person).getCardsInHand().addAll(deck.dealCard(1));
+		if(person instanceof Player) {
+			System.out.println("You now have the follwing hand: ");
+			System.out.println(cardsOnTable.get(person));
+		}
+		return cardsOnTable;
 	}
+
 
 	@Override
-	public void Stand() {
-		// TODO Auto-generated method stub
-		
+	public String toString() {
+		return   name ;
 	}
-
 	
 
 }
