@@ -12,15 +12,17 @@ public class Dealer extends PersonAtTable{
 	}
 
 	public Dealer() {
-		
+		this.numTokens = 1000000;
 		
 	}
 	
-	public Map<PersonAtTable, Hand> dealCards(Deck deck, PersonAtTable dealer, PersonAtTable player) {
+	public Map<PersonAtTable, Hand> dealCards(Deck deck, PersonAtTable dealer, List <PersonAtTable> players) {
 		deck.shuffleDeck();
 		HashMap<PersonAtTable, Hand> cardsOnTable = new HashMap<>();
 		//cards on table mapped with each play and their hand
-		cardsOnTable.put(player, player.newHand(deck.dealCard(2)));
+		for (PersonAtTable player : players) {
+			cardsOnTable.put(player, player.newHand(deck.dealCard(2)));
+		}
 		cardsOnTable.put(dealer, dealer.newHand(deck.dealCard(2)));
 //		System.out.println(cardsOnTable); //Shows each hand 
 		

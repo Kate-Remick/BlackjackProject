@@ -9,6 +9,8 @@ public class Player extends PersonAtTable {
 
 	public Player(String name) {
 		this.name  = name;
+		this.numTokens = 150;
+		System.out.println("You came here with " + numTokens + " tokens.");
 	}
 	
 	public Hand getHand() {
@@ -22,7 +24,7 @@ public class Player extends PersonAtTable {
 		for (Card card : cardsDealt) {
 			System.out.println(card);
 		}
-		
+		System.out.println();
 		return ph;
 		
 	}
@@ -33,6 +35,7 @@ public class Player extends PersonAtTable {
 		if(person instanceof Player) {
 			System.out.println("You now have the follwing hand: ");
 			System.out.println(cardsOnTable.get(person));
+			System.out.println();
 		}
 		return cardsOnTable;
 	}

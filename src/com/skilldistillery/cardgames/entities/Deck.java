@@ -28,7 +28,13 @@ public class Deck {
 		return cardsDealt;
 		
 	}
+	public Card dealSingleCard() {
+		return this.cardsInDeck.remove(0);
+	}
 	public void shuffleDeck() {
 		Collections.shuffle(this.cardsInDeck);
+	}
+	public void showDeck() {
+		System.out.println(this.cardsInDeck);
 	}
 }
