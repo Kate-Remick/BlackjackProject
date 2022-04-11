@@ -2,6 +2,7 @@ package com.skilldistillery.blackjack.app;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -52,7 +53,7 @@ public class BlackJackApp {
 
 				List<PersonAtTable> players = playerNumber(you);
 				Map<PersonAtTable, Hand> cardsOnTable = new HashMap<>();
-				System.out.println("You approach the BlackJack table in the back corner.");
+				System.out.println("You approach the BlackJack table.");
 				if (players.size() == 1) {
 					System.out.println(
 							"There are no other players at the table right now, and the man behind it looks bored.");
@@ -63,7 +64,7 @@ public class BlackJackApp {
 							+ " people at the table.");
 				}
 
-				System.out.println("Want me to deal you in? He asks gruffly.");
+				System.out.println("Want me to deal you in? He asks.");
 				System.out.println("(yes or no)");
 				String userReply = this.kb.nextLine();
 				userReply = userReply.toLowerCase();
@@ -80,7 +81,9 @@ public class BlackJackApp {
 									kb.nextLine();
 								}
 							} else {
-								bet = (int) Math.random() * player.getNumTokens() % 33;
+								System.out.println(player + "is placing their bet");
+								bet = (int) (Math.random() * player.getNumTokens() );
+								System.out.println(bet);
 								player.placeBet(bet);
 							}
 						}
@@ -102,13 +105,13 @@ public class BlackJackApp {
 						cardsOnTable = dealerTurn(cardsOnTable, dealer, deck);
 					}
 					if (gameWon == false) {
-						gameWon = checkWin(cardsOnTable);
+						checkWin(cardsOnTable);
 					}
 					gameWon = false;
 					System.out.println("Do you wish to play again?");
 					userReply = kb.nextLine();
 				}
-				System.out.println("The dealer nods to you politely as you get up from the table and walk away");
+				System.out.println("You get up from the table and walk away");
 
 				validInput = true;
 			} catch (Exception e) {
@@ -136,7 +139,7 @@ public class BlackJackApp {
 					if (cardsOnTable.get(you).getValue() == 21) {
 						System.out.println("You've got a BlackJack. You win!");
 						System.out.println("Collect your winnings: ");
-						you.collectWinnings();
+						you.collectWinnings(0);
 						gameWon = true;
 					}
 					menu();
@@ -155,7 +158,7 @@ public class BlackJackApp {
 						} else if (cardsOnTable.get(you).getValue() == 21) {
 							System.out.println("You win!");
 							System.out.println("Collect your winnings: ");
-							you.collectWinnings();
+							you.collectWinnings(0);
 							gameWon = true;
 							opt = "3";
 						}
@@ -186,7 +189,7 @@ public class BlackJackApp {
 				System.out.println(cardsOnTable.get(npc));
 				System.out.println(npc + " wins!");
 				System.out.println(npc + "Collects their winnings...");
-				npc.collectWinnings();
+				npc.collectWinnings(0);
 				gameWon = true;
 				break;
 			}
@@ -217,7 +220,7 @@ public class BlackJackApp {
 				System.out.println(cardsOnTable.get(dealer));
 				System.out.println("Dealer wins!");
 				System.out.println("The dealer keeps the pot");
-				dealer.collectWinnings();
+				dealer.collectWinnings(0);
 				gameWon = true;
 				break;
 			}
@@ -241,20 +244,33 @@ public class BlackJackApp {
 
 	private boolean checkWin(Map<PersonAtTable, Hand> cardsOnTable) {
 		Set<PersonAtTable> players = cardsOnTable.keySet();
+		Set<PersonAtTable> playerTie = new HashSet<>();
 		int winningValue = 0;
 		PersonAtTable winningPlayer = new Player("No one");
 		for (PersonAtTable player : players) {
 			int handValue;
 			handValue = cardsOnTable.get(player).getValue();
-			if (handValue < 21 && handValue > winningValue) {
+			if (handValue < 21 && handValue >= winningValue) {
+				if(handValue == winningValue) {
+					playerTie.add(player);
+				}
 				winningValue = handValue;
 				winningPlayer = player;
 			}
 			System.out.println(player + " has a hand value of " + handValue);
 		}
-		System.out.println(winningPlayer + " wins!");
-		System.out.println(winningPlayer + " collects the pot...");
-		winningPlayer.collectWinnings();
+		if(playerTie.size() == 0) {
+			System.out.println(winningPlayer + " wins!");
+			System.out.println(winningPlayer + " collects the pot...");
+			winningPlayer.collectWinnings(playerTie.size());
+		} else {
+			System.out.println("The following players have tied: ");
+			for (PersonAtTable player : playerTie) {
+				System.out.println(player);
+				player.collectWinnings(playerTie.size());
+			}
+			
+		}
 		return false;
 	}
 

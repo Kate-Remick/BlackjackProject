@@ -10,7 +10,7 @@ public class NPCPlayer extends PersonAtTable {
 	
 	public NPCPlayer() {
 		this.name = getNPCName();
-		this.numTokens = 200 * ((int)Math.random());
+		this.numTokens = (int)(Math.random()*200);
 		
 		
 	}

@@ -34,8 +34,9 @@ public abstract class PersonAtTable implements Hit {
 		return betPlaced;
 	}
 
-	public void collectWinnings() {
-		this.numTokens += bettingPool;
-		bettingPool = 0;
+	public void collectWinnings(int numTiedPlayers) {
+		
+		this.numTokens += bettingPool/numTiedPlayers;
+		bettingPool -= bettingPool/numTiedPlayers;
 	}
 }
