@@ -10,7 +10,6 @@ public class Player extends PersonAtTable {
 	public Player(String name) {
 		this.name  = name;
 		this.numTokens = 150;
-		System.out.println("You came here with " + numTokens + " tokens.");
 	}
 	
 	public Hand getHand() {

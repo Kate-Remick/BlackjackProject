@@ -51,7 +51,7 @@ public class BlackJackApp {
 					gambling = false;
 				}
 
-				List<PersonAtTable> players = playerNumber(you);
+				List<PersonAtTable> players = playerNumber(you, dealer);
 				Map<PersonAtTable, Hand> cardsOnTable = new HashMap<>();
 				System.out.println("You approach the BlackJack table.");
 				if (players.size() == 1) {
@@ -70,6 +70,7 @@ public class BlackJackApp {
 				userReply = userReply.toLowerCase();
 				while (userReply.startsWith("y")) {
 					if (gambling) {
+						System.out.println("You came here with " + you.getNumTokens() + " tokens.");
 						System.out.println("Place your initial bets: ");
 						for (PersonAtTable player : players) {
 							int bet = 0;
@@ -81,8 +82,12 @@ public class BlackJackApp {
 									kb.nextLine();
 								}
 							} else {
-								System.out.println(player + "is placing their bet");
-								bet = (int) (Math.random() * player.getNumTokens() );
+								System.out.println(player + " is placing their bet");
+								if (player instanceof Dealer) {
+									bet = (int)(Math.random()*200);
+								}else {
+									bet = (int) (Math.random() * player.getNumTokens() );
+								}
 								System.out.println(bet);
 								player.placeBet(bet);
 							}
@@ -108,6 +113,7 @@ public class BlackJackApp {
 						checkWin(cardsOnTable);
 					}
 					gameWon = false;
+					System.out.println("You currently have " + you.getNumTokens() + " Tokens");
 					System.out.println("Do you wish to play again?");
 					userReply = kb.nextLine();
 				}
@@ -189,6 +195,7 @@ public class BlackJackApp {
 				System.out.println(cardsOnTable.get(npc));
 				System.out.println(npc + " wins!");
 				System.out.println(npc + "Collects their winnings...");
+				System.out.println();
 				npc.collectWinnings(0);
 				gameWon = true;
 				break;
@@ -199,6 +206,7 @@ public class BlackJackApp {
 			} else {
 				System.out.println(npc + " stands.");
 				System.out.println(npc + "'s cards: " + cardsOnTable.get(npc));
+				System.out.println();
 				break;
 			}
 
@@ -206,6 +214,7 @@ public class BlackJackApp {
 		if (npcValue > 21) {
 			System.out.println(npc + " busts - they displays their hand: ");
 			System.out.println(cardsOnTable.get(npc));
+			System.out.println();
 		}
 
 		return cardsOnTable;
@@ -221,6 +230,7 @@ public class BlackJackApp {
 				System.out.println("Dealer wins!");
 				System.out.println("The dealer keeps the pot");
 				dealer.collectWinnings(0);
+				System.out.println();
 				gameWon = true;
 				break;
 			}
@@ -230,6 +240,7 @@ public class BlackJackApp {
 			} else {
 				System.out.println("The dealer stands.");
 				System.out.println("Dealer's cards: " + cardsOnTable.get(dealer));
+				System.out.println();
 				break;
 			}
 
@@ -237,6 +248,7 @@ public class BlackJackApp {
 		if (dealerValue > 21) {
 			System.out.println("The dealer busts - he displays his hand: ");
 			System.out.println(cardsOnTable.get(dealer));
+			System.out.println();
 		}
 
 		return cardsOnTable;
@@ -252,6 +264,7 @@ public class BlackJackApp {
 			handValue = cardsOnTable.get(player).getValue();
 			if (handValue < 21 && handValue >= winningValue) {
 				if(handValue == winningValue) {
+					playerTie.add(winningPlayer);
 					playerTie.add(player);
 				}
 				winningValue = handValue;
@@ -259,7 +272,7 @@ public class BlackJackApp {
 			}
 			System.out.println(player + " has a hand value of " + handValue);
 		}
-		if(playerTie.size() == 0) {
+		if(playerTie.size() > 1) {
 			System.out.println(winningPlayer + " wins!");
 			System.out.println(winningPlayer + " collects the pot...");
 			winningPlayer.collectWinnings(playerTie.size());
@@ -274,7 +287,7 @@ public class BlackJackApp {
 		return false;
 	}
 
-	private List<PersonAtTable> playerNumber(PersonAtTable player1) {
+	private List<PersonAtTable> playerNumber(PersonAtTable player1, PersonAtTable dealer) {
 		List<PersonAtTable> players = new ArrayList<>();
 		boolean gotPlayers = false;
 		while (!gotPlayers) {
@@ -292,6 +305,7 @@ public class BlackJackApp {
 					players.add(new NPCPlayer());
 				}
 				players.add(player1);
+				players.add(dealer);
 				gotPlayers = true;
 			} catch (Exception e) {
 				System.out.println("Invalid input.");
