@@ -26,7 +26,7 @@ public abstract class PersonAtTable implements Hit {
 		if (bet > this.numTokens) {
 			System.out.println("You do not have that many tokens. Place a different bet.");
 		}else {
-			numTokens -= bet;
+			this.numTokens -= bet;
 			bettingPool+= bet;
 			betPlaced = true;
 		}

@@ -36,8 +36,9 @@ public class BlackJackApp {
 		boolean validInput = false;
 		while (!validInput) {
 			try {
-
+				Map<PersonAtTable, Hand> cardsOnTable = new HashMap<>();
 				Dealer dealer = new Dealer();
+
 				System.out.println("Enter your name");
 				String name = kb.nextLine();
 				Player you = new Player(name);
@@ -51,8 +52,7 @@ public class BlackJackApp {
 					gambling = false;
 				}
 
-				List<PersonAtTable> players = playerNumber(you, dealer);
-				Map<PersonAtTable, Hand> cardsOnTable = new HashMap<>();
+				List<PersonAtTable> players = playerNumber(you);
 				System.out.println("You approach the BlackJack table.");
 				if (players.size() == 1) {
 					System.out.println(
@@ -83,15 +83,13 @@ public class BlackJackApp {
 								}
 							} else {
 								System.out.println(player + " is placing their bet");
-								if (player instanceof Dealer) {
-									bet = (int)(Math.random()*200);
-								}else {
-									bet = (int) (Math.random() * player.getNumTokens() );
-								}
+								bet = (int) (Math.random() * player.getNumTokens() );
 								System.out.println(bet);
 								player.placeBet(bet);
 							}
 						}
+						System.out.println("The dealer bets 50");
+						dealer.placeBet(50);
 						System.out.println("All players have placed their bets.");
 						System.out.println("The pool has " + PersonAtTable.bettingPool + " Tokens.");
 					}
@@ -191,10 +189,10 @@ public class BlackJackApp {
 		int npcValue = cardsOnTable.get(npc).getValue();
 		while (npcValue <= 21) {
 			if (npcValue == 21) {
-				System.out.println(npc + "shows their hand:");
+				System.out.println(npc + " shows their hand:");
 				System.out.println(cardsOnTable.get(npc));
 				System.out.println(npc + " wins!");
-				System.out.println(npc + "Collects their winnings...");
+				System.out.println(npc + " Collects their winnings...");
 				System.out.println();
 				npc.collectWinnings(0);
 				gameWon = true;
@@ -258,9 +256,9 @@ public class BlackJackApp {
 		Set<PersonAtTable> players = cardsOnTable.keySet();
 		Set<PersonAtTable> playerTie = new HashSet<>();
 		int winningValue = 0;
+		int handValue;
 		PersonAtTable winningPlayer = new Player("No one");
 		for (PersonAtTable player : players) {
-			int handValue;
 			handValue = cardsOnTable.get(player).getValue();
 			if (handValue < 21 && handValue >= winningValue) {
 				if(handValue == winningValue) {
@@ -272,11 +270,17 @@ public class BlackJackApp {
 			}
 			System.out.println(player + " has a hand value of " + handValue);
 		}
-		if(playerTie.size() > 1) {
+		for (PersonAtTable person : playerTie) {
+			handValue = cardsOnTable.get(person).getValue();
+			if(handValue < winningValue) {
+				playerTie.remove(person);
+			}
+		}
+		if(playerTie.size() <= 1) {
 			System.out.println(winningPlayer + " wins!");
 			System.out.println(winningPlayer + " collects the pot...");
 			winningPlayer.collectWinnings(playerTie.size());
-		} else {
+		} else if(playerTie.size() > 1){
 			System.out.println("The following players have tied: ");
 			for (PersonAtTable player : playerTie) {
 				System.out.println(player);
@@ -287,7 +291,7 @@ public class BlackJackApp {
 		return false;
 	}
 
-	private List<PersonAtTable> playerNumber(PersonAtTable player1, PersonAtTable dealer) {
+	private List<PersonAtTable> playerNumber(PersonAtTable player1) {
 		List<PersonAtTable> players = new ArrayList<>();
 		boolean gotPlayers = false;
 		while (!gotPlayers) {
@@ -305,7 +309,6 @@ public class BlackJackApp {
 					players.add(new NPCPlayer());
 				}
 				players.add(player1);
-				players.add(dealer);
 				gotPlayers = true;
 			} catch (Exception e) {
 				System.out.println("Invalid input.");
