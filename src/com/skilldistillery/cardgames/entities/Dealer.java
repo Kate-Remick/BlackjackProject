@@ -31,6 +31,7 @@ public class Dealer extends PersonAtTable{
 	
 	public Deck getNewDeck() {
 		System.out.println("The dealer reaches below the table and pulls out a fresh deck of cards.");
+		System.out.println();
 		return new Deck();
 	}
 
@@ -48,6 +49,7 @@ public class Dealer extends PersonAtTable{
 		Hand dh = new Hand(cardsDealt);
 		System.out.println("The dealer deals himself in and shows you the second card: ");
 		System.out.println("It is a " + cardsDealt.get(0));
+		System.out.println();
 		
 		return dh;
 	}
